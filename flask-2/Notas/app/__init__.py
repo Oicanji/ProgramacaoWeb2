@@ -4,6 +4,7 @@ import os
 
 __SECRET_KEY = os.getenv("SECRET_KEY")
 
+# flaskenv\Scripts\activate
 def create_app():
     app = Flask(__name__)
     app.config['SECRET_KEY'] = __SECRET_KEY

@@ -8,8 +8,10 @@
                 <h5>{{ note.note }}</h5>
                 <small>{{ note.date }}</small>
             </div>
-            <div class="col-2">  
-                <i class="fa-solid fa-clipboard"></i>
+            <div class="col-2">
+                <button type="button" class="close" onClick="deleteNote({{ note.id }})">
+                    <i class="fa fa-trash"></i>
+                </button>  
             </div>
         </div>
     </li>

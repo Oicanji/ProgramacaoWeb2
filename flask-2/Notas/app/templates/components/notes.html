@@ -1,0 +1,24 @@
+<h1 class="text-center">Notas</h1>
+
+<ul class="list-group list-group-flush" id="note">
+    {% for note in user.notes %}
+    <li class="list-group-item">
+        <div class="row">
+            <div class="col-10">
+                <h5>{{ note.note }}</h5>
+                <small>{{ note.date }}</small>
+            </div>
+            <div class="col-2">  
+                <i class="fa-solid fa-clipboard"></i>
+            </div>
+        </div>
+    </li>
+    {% endfor %}
+</ul>
+<form method="POST" class="p-3">
+    <textarea name="note" id="note" rows="10" class="form-control w-100"></textarea>
+    <br />
+    <div class="text-center mt-2">
+        <button type="submit" class="btn btn-lg btn-primary">Salvar Nova Nota</button>
+    </div>
+</form> 

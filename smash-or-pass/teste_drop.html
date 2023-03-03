@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Home</title>
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css" integrity="sha384-xOolHFLEh07PJGoPkLv1IbcEPTNtaed2xpHsD9ESMhqIYd0nLMwNLD69Npy4HI+N" crossorigin="anonymous">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.3.0/css/all.min.css">
+        <link href=" https://cdn.jsdelivr.net/npm/sweetalert2@11.7.3/dist/sweetalert2.min.css " rel="stylesheet">
+
+        <style>
+            .meet-canva{
+                width: 100%;
+                height: 700px;
+                position: relative;
+                padding: 20px;
+
+                transition: transform .2s ease-in-out;
+            }
+            .fade-deny{
+                height: 700px;
+                width: 100px;
+
+                position: absolute;
+                top: 0;
+                left: 0;
+
+                background-image: linear-gradient(90deg, rgba(35, 135, 235, 0.5) 0%, rgba(255, 255, 255, 0) 80%);
+                transition: transform .2s ease-in-out;
+            }
+            .fade-allow{
+                height: 700px;
+                width: 100px;
+
+                position: absolute;
+                top: 0;
+                right: 0;
+
+                background-image: linear-gradient(90deg, rgba(255, 255, 255, 0) 0%, rgba(220, 37, 58, 0.5) 80%);
+                transition: transform .2s ease-in-out;
+            }
+            .fade-like{
+                height: 100px;
+                width: 100%;
+
+                position: absolute;
+                top: 0;
+                right: 0;
+
+                background-image: linear-gradient(180deg, rgba(255, 238, 108, 0.5) 0%, rgba(255, 255, 255, 0) 80%);
+                transition: transform .2s ease-in-out;
+            }
+            .meet-char{
+                height: 600px;
+                width: 400px;
+
+                position: absolute;
+                top: 0;
+                left: 50%;
+                transform: translateX(-50%);
+                background-color: #ccc;
+                border: 1px solid rgb(176, 176, 176);
+                z-index: 2;
+                cursor: move;
+
+                transition: transform .2s ease-in-out;
+            }
+            .meet-next{
+                height: 600px;
+                width: 400px;
+
+                position: absolute;
+                top: 0;
+                left: 50%;
+                transform: translateX(-50%);
+                background-color: rgb(133, 133, 133);
+                border: 1px solid rgb(104, 104, 104);
+                z-index: 1;
+            }
+            .meet-option{
+                height: 100px;
+                width: 400px;
+
+                position: absolute;
+                bottom: 0;
+                left: 50%;
+                transform: translateX(-50%);
+                background-color: #ccc;
+                border: 1px solid rgb(176, 176, 176);
+            }
+
+        </style>
+    </head>
+    <body>
+        <div class="container-fluid">
+
+            <div class="fade-deny" style="display:none"></div>
+            <div class="fade-allow" style="display:none"></div>
+            <div class="fade-like" style="display:none"></div>
+            
+            <div class="meet-canva mt-5">
+                <div class="meet-char draggable" value=""></div>
+                <div class="meet-next"></div>
+                <div class="meet-option"></div>
+            </div>
+        </div>
+
+        <script
+			  src="https://code.jquery.com/jquery-3.6.3.slim.js"
+			  integrity="sha256-DKU1CmJ8kBuEwumaLuh9Tl/6ZB6jzGOBV/5YpNE2BWc="
+			  crossorigin="anonymous"></script>
+		
+        <script>
+            const draggable = document.querySelector('.draggable');
+            let offsetX, offsetY;
+            let lastX = null;
+            let lastY = null;
+
+            const x_trigger = 200;
+            const y_trigger = 200;
+        
+            draggable.addEventListener('mousedown', function(e) {
+              offsetX = e.clientX - draggable.offsetLeft;
+              offsetY = e.clientY - draggable.offsetTop;
+              document.addEventListener('mousemove', onMouseMove);
+            });
+
+            function handleFadeTop(){
+                event.preventDefault();
+                $('.fade-like').fadeToggle('slow'); 
+            }
+            function handleFadeLeft(){
+                event.preventDefault();
+                $('.fade-deny').fadeToggle('slow'); 
+            }
+
+            function handleFadeRight(){
+                event.preventDefault();
+                $('.fade-allow').fadeToggle('slow'); 
+            }
+
+
+            function update_fade(right_top){
+                if(right_top.includes('top')){
+                    handleFadeTop();
+                }
+                if(right_top.includes('left')){
+                    handleFadeLeft();
+                }
+                if(right_top.includes('right')){
+                    handleFadeRight();
+                }
+            }
+        
+            function onMouseMove(e) {
+                const newX = e.clientX - offsetX;
+                const newY = e.clientY - offsetY;
+
+                var x_position = 0;
+                var y_position = 0;
+            
+                if (Math.abs(newX - window.innerWidth / 2) < 30 && Math.abs(newY - window.innerHeight / 2) > 5) {
+                    draggable.style.top = '0';
+                    draggable.style.left = '50%';
+                } else {
+                    draggable.style.left = newX + 'px';
+                    draggable.style.top = newY + 'px';
+            
+                    if (lastX !== null && newX < lastX) {
+                        x_position = -1;
+                    } else if (lastX !== null && newX > lastX) {
+                        x_position = 1;
+                    } else {
+                        x_position = 0;
+                    }
+
+                    //console log if top or bottom
+                    if (lastY !== null && newY < lastY){
+                        y_position = 1;
+                    } else if (lastY !== null && newY > lastY) {
+                        y_position = -1;
+                    } else {
+                        y_position = 0;
+                    }
+            
+                    lastX = newX;
+                    lastY = newY;
+                }
+
+                //console.log(e.clientX, e.clientY);
+
+                var end_value = "";
+
+                if (e.clientY < (500 - y_trigger)){
+                    end_value += "top-";
+                }
+                if (e.clientX < (1000 - x_trigger)){
+                    end_value += "left";
+                }else if (e.clientX > (1000 + x_trigger)){
+                    end_value += "right";
+                }else {
+                    if(end_value == 'top-'){
+                        end_value = 'top';
+                    }
+                }
+                draggable.setAttribute('value', end_value);
+
+                update_fade(end_value);
+            }
+        
+            document.addEventListener('mouseup', function() {
+              document.removeEventListener('mousemove', onMouseMove);
+              lastX = null;
+            });
+        </script>
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.bundle.min.js"
+            integrity="sha384-Fy6S3B9q64WdZWQUiU+q4/2Lc9npb8tCaSX9FK7E8HnRr0Jz8D6OP9dO5Vg3Q9ct"
+            crossorigin="anonymous"></script>
+
+        <script src=" https://cdn.jsdelivr.net/npm/sweetalert2@11.7.3/dist/sweetalert2.all.min.js "></script>
+    </body>
+</html>

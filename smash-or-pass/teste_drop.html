@@ -41,7 +41,7 @@
                 transition: transform .2s ease-in-out;
             }
             .fade-like{
-                height: 100px;
+                height: 300px;
                 width: 100%;
 
                 position: absolute;
@@ -50,6 +50,7 @@
 
                 background-image: linear-gradient(180deg, rgba(255, 238, 108, 0.5) 0%, rgba(255, 255, 255, 0) 80%);
                 transition: transform .2s ease-in-out;
+                z-index: 3;
             }
             .meet-char{
                 height: 600px;
@@ -128,28 +129,46 @@
 
             function handleFadeTop(){
                 event.preventDefault();
-                $('.fade-like').fadeToggle('slow'); 
+                $('.fade-like').show('slow'); 
+            }
+            function handleFadeBottom(){
+                event.preventDefault();
+                $('.fade-like').hide('slow'); 
             }
             function handleFadeLeft(){
                 event.preventDefault();
-                $('.fade-deny').fadeToggle('slow'); 
+                $('.fade-deny').show('slow'); 
+                $('.fade-allow').hide('slow'); 
             }
 
             function handleFadeRight(){
                 event.preventDefault();
-                $('.fade-allow').fadeToggle('slow'); 
+                $('.fade-deny').hide('slow'); 
+                $('.fade-allow').show('slow'); 
+            }
+
+            function handleHideAll(){
+                $('.fade-deny').hide('slow'); 
+                $('.fade-allow').hide('slow'); 
+                $('.fade-like').hide('slow'); 
             }
 
 
             function update_fade(right_top){
                 if(right_top.includes('top')){
                     handleFadeTop();
+                }else{
+                    handleFadeBottom();
                 }
                 if(right_top.includes('left')){
                     handleFadeLeft();
                 }
                 if(right_top.includes('right')){
                     handleFadeRight();
+                }
+
+                if(right_top == ""){
+                    handleHideAll();
                 }
             }
         

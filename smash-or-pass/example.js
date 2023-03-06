@@ -49,7 +49,7 @@ var debug = {
                         "value": 100
                     },
                     {
-                        "name": "female",
+                        "name": "Female",
                         "type": "boolean",
                         "value": true
                     }
@@ -137,7 +137,7 @@ var debug = {
                         "value": 100
                     },
                     {
-                        "name": "female",
+                        "name": "Female",
                         "type": "boolean",
                         "value": true
                     }
@@ -163,7 +163,7 @@ var debug = {
                         "value": 100
                     },
                     {
-                        "name": "female",
+                        "name": "Female",
                         "type": "boolean",
                         "value": true
                     }
@@ -189,7 +189,7 @@ var debug = {
                         "value": 100
                     },
                     {
-                        "name": "female",
+                        "name": "Female",
                         "type": "boolean",
                         "value": true
                     }
@@ -220,7 +220,7 @@ var debug = {
                         "value": 100
                     },
                     {
-                        "name": "female",
+                        "name": "Female",
                         "type": "boolean",
                         "value": true
                     }
@@ -251,7 +251,7 @@ var debug = {
                         "value": 100
                     },
                     {
-                        "name": "female",
+                        "name": "Female",
                         "type": "boolean",
                         "value": true
                     }

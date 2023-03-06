@@ -85,7 +85,7 @@ quiz.result = {
             item.innerHTML = 'Não há itens nesta lista';
             document.querySelector('div.deny-list').appendChild(item);
         }
-        
+
         if(items_super_allow == 0 && items_allow == 0) {
             // remover '#graficos'
             $('#graficos').html(`
@@ -200,7 +200,9 @@ quiz.result = {
         // Cria as cores para os dados do gráfico
         var colors = [];
         for (var i = 0; i < porcentagesAverages.length; i++) {
-            colors.push(randomColor());
+            color_no_transparency = randomColor();
+            color_with_transparency = color_no_transparency + '55';
+            colors.push(color_with_transparency);
         }
 
         // Cria o gráfico de radar

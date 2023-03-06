@@ -1,18 +1,16 @@
-<script src="https://cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.slim.min.js"
-    integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj"
-    crossorigin="anonymous"></script>
+<script src="static/js/jquery.js"></script>
+<script src="static/js/chart.min.js"></script>
+<script type="importmap" src="static/js/chart.umd.js.map"></script>
+
+<script src="example.js"></script>
+<script src="static/js/quiz/quiz.js"></script>
+<script src="static/js/quiz/quiz-ui.js"></script>
+<script src="static/js/quiz/quiz-logic.js"></script>
+<script src="static/js/quiz/quiz-result.js"></script>
+
+
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.bundle.min.js"
-    integrity="sha384-Fy6S3B9q64WdZWQUiU+q4/2Lc9npb8tCaSX9FK7E8HnRr0Jz8D6OP9dO5Vg3Q9ct"
-    crossorigin="anonymous"></script>
+integrity="sha384-Fy6S3B9q64WdZWQUiU+q4/2Lc9npb8tCaSX9FK7E8HnRr0Jz8D6OP9dO5Vg3Q9ct"
+crossorigin="anonymous"></script>
 
 <script src=" https://cdn.jsdelivr.net/npm/sweetalert2@11.7.3/dist/sweetalert2.all.min.js "></script>
-<script type="text/javascript">
-    function deleteNote(noteId) {
-        fetch("/delete-note", {
-            method: "POST",
-            body: JSON.stringify({ noteId: noteId }),
-        }).then((_res) => {
-            window.location.href = "/";
-        });
-    }
-</script>

@@ -6,14 +6,11 @@
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <title>{% block title %}Home{% endblock %}</title>
         {% include "styles.html" %}
+        {% include "scripts.html" %}
     </head>
     <body>
-        {% include "components/navbar.html" %}
-        <div class="container-fluid">
-            {% block content %} {% endblock %}
-        </div>
-        {% include "components/footer.html" %}
-        {% include "scripts.html" %}
+        {% block content %} {% endblock %}
+
         {% include "components/alert.html" %}
     </body>
 </html>

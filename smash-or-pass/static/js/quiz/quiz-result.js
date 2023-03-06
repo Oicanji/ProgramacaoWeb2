@@ -4,7 +4,7 @@ quiz.result = {
             <div class="container p-5 mt-3 w-100 shadow rounded">
                 <h3>Você terminou o quiz "${quiz.data.quiz.name}"!</h3>
                 <p>Veja abaixo os resultados:</p>
-                <div class="row">
+                <div class="row" id="graficos">
                     <div class="col-md-6 col-sm-6">
                         <canvas id="render_booleans"></canvas>
                     </div>
@@ -84,6 +84,14 @@ quiz.result = {
             var item = document.createElement('p');
             item.innerHTML = 'Não há itens nesta lista';
             document.querySelector('div.deny-list').appendChild(item);
+        }
+        
+        if(items_super_allow == 0 && items_allow == 0) {
+            // remover '#graficos'
+            $('#graficos').html(`
+                <div class="col-md-12 col-sm-12 p-4">
+                    <p class="text-center">Não há gráficos para serem exibidos</p>
+                </div>`);
         }
     },
 

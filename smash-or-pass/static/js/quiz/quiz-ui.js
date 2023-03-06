@@ -24,17 +24,17 @@ quiz.ui = {
             <div class="meet-option p-2 shadow">
                 <div class="row justify-content-center">
                     <div class="col-4">
-                        <button class="btn btn-primary btn-block" onclick="quiz.logic.answer('deny')" data-toggle="tooltip" data-placement="top" title="${quiz.deny}">
+                        <button class="btn btn-primary btn-block" onclick="quiz.ui.handleFadeLeft();quiz.ui.handleMouseUpButton('left')" data-toggle="tooltip" data-placement="top" title="${quiz.deny}">
                             ${quiz.ui.deny_icon}
                         </button>
                     </div>
                     <div class="col-4">
-                        <button class="btn btn-danger btn-block" onclick="quiz.logic.answer('allow')" data-toggle="tooltip" data-placement="top" title="${quiz.allow}">
+                        <button class="btn btn-danger btn-block" onclick="quiz.ui.handleFadeRight();quiz.ui.handleMouseUpButton('right')" data-toggle="tooltip" data-placement="top" title="${quiz.allow}">
                             ${quiz.ui.allow_icon}
                         </button>
                     </div>
                     <div class="col-4">
-                        <button class="btn btn-warning btn-block text-white" onclick="quiz.logic.answer('super_allow')" data-toggle="tooltip" data-placement="top" title="${quiz.super_allow}">
+                        <button class="btn btn-warning btn-block text-white" onclick="quiz.ui.handleFadeTop();quiz.ui.handleMouseUpButton('top')" data-toggle="tooltip" data-placement="top" title="${quiz.super_allow}">
                             ${quiz.ui.super_allow_icon}
                         </button>
                     </div>
@@ -94,12 +94,40 @@ quiz.ui = {
             quiz.ui.resetPosition();
         }else{
             if(value.includes('top')){
-                valeur = "top";
+                value = "top";
             }
             quiz.logic.answer(value);
         }
         quiz.ui.update_fade("");
     },
+    handleMouseUpButton: function (value) {
+        event.preventDefault();
+
+        var to_action = {};
+
+        if (value.includes('top')) {
+            to_action['top'] = "-200%";
+        } else {
+            if (value.includes('left')) {
+                to_action['left'] = "-50%";
+            }
+            if (value.includes('right')) {
+                to_action['left'] = "150%";
+            }
+        }
+        $(draggable).animate(
+            to_action, {
+            duration: "fast"
+        });
+
+        if(value.includes('top')){
+            value = "top";
+        }
+        quiz.logic.answer(value);
+    
+        quiz.ui.update_fade("");
+    },
+
     resetPosition: function () {
         draggable.style.top = 'var(--title-height)';
         draggable.style.left = '50%';
@@ -107,8 +135,10 @@ quiz.ui = {
         draggable.classList.remove('right');
 
         draggable.setAttribute('value', '');
-    },
 
+        //esconder todos os tooltips
+        $('[data-toggle="tooltip"]').tooltip('hide');
+    },
     onMouseMove: function (e) {
         const newX = e.clientX - offsetX;
         const newY = e.clientY - offsetY;

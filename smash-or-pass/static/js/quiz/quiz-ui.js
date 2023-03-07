@@ -69,6 +69,8 @@ quiz.ui = {
         }
     },
     handleMouseUp: function () {
+        if(quiz.ui.blocked) quiz.ui.resetPosition();
+
         event.preventDefault();
 
         var to_action = {};
@@ -140,6 +142,8 @@ quiz.ui = {
         $('[data-toggle="tooltip"]').tooltip('hide');
     },
     onMouseMove: function (e) {
+        if(quiz.ui.blocked) return;
+
         const newX = e.clientX - offsetX;
         const newY = e.clientY - offsetY;
 

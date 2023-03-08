@@ -28,13 +28,15 @@ attributes = {
         }
         input_attributes.value = JSON.stringify(list_clear);
     },
-    quiz_init : function (questions) {
-        $('#use_attributes').slideUp();
-        attributes.table.table_use_visible = true;
-
-        for (const question of questions) {
-            for (const attribute of question.attributes) {
-                attributes.add_all(attribute.name, attribute.type, attribute.value);
+    quiz_init : function (questions=0) {
+        if(questions == 0){
+            $('#use_attributes').css('display','none');
+            attributes.table.table_use_visible = true;
+        }else{
+            for (const question of questions) {
+                for (const attribute of question.attributes) {
+                    attributes.add_all(attribute.name, attribute.type, attribute.value);
+                }
             }
         }
     },
@@ -90,14 +92,14 @@ attributes.table = {
     table_use_visible: false,
     print: function (attribute, click_to_add=false) {
         del = `<td>
-            <button type="button" class="btn btn-danger" onClick="attributes.table.remove('${attribute.name}')">Remover</button>
+            <button type="button" class="btn btn-danger" onClick="attributes.table.minus('#attr_${attribute.name}')">Remover</button>
         </td>`;
         if(click_to_add == false){
             del = '';
         }
 
         return `
-        <tr ${click_to_add ? 'onClick="attributes.table.add(\''+attribute.name+'\', \''+attribute.type+'\', \''+attribute.value+'\')"' : ''}>
+        <tr id="attr_${attribute.name}"  ${click_to_add ? 'onClick="attributes.table.add(\''+attribute.name+'\', \''+attribute.type+'\', \''+attribute.value+'\')"' : ''}>
             <td>${attribute.name}</td>
             <td>${attribute.type}</td>
             <td>${attribute.value}</td>
@@ -112,31 +114,36 @@ attributes.table = {
         }
         attributes.ui.reset();
     },
-    remove: function (name) {
-        attributes.remove(name);
-        attributes.ui.reset();
+    minus: function (tr_id) {
+        tr = $(tr_id);
+        attributes_name = $(tr).children()[0].innerHTML;
+        attributes_type = $(tr).children()[1].innerHTML;
+        attributes_value = $(tr).children()[2].innerHTML;
+
+        attributes.remove(attributes_name);
+
+        attributes.change();
     },
     refresh: function () {
         all = '';
         use = '';
 
-        $table_use = document.querySelector('#table_use_attribute');
-        $table_all = document.querySelector('#table_all_attribute');
+        $table_use = $('#table_use_attribute');
+        $table_all = $('#table_all_attribute');
+        
+        $($table_use).html(use);
+        $($table_all).html(all);
 
         for (const attribute of attributes.list) {
             if(attribute.use){
-                all += attributes.table.print(attribute, true);
+                all += attributes.table.print(attribute, false);
             }else{
-                use += attributes.table.print(attribute, false);
+                use += attributes.table.print(attribute, true);
             }
         }
         //clear all tables
-        $table_use.innerHTML = '';
-        $table_all.innerHTML = '';
-
-        //add new values
-        $table_use.innerHTML = use;
-        $table_all.innerHTML = all;
+        $($table_use).html(use);
+        $($table_all).html(all);
     },
 }
 attributes.ui = {

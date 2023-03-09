@@ -20,7 +20,7 @@
     <div class="container">
         <div class="p-5">
             <!-- <form method="POST"> -->
-            <h3 align="center">Cadastrar um Novo Quiz</h3>
+            <h3 align="center" id="title-quiz">Cadastrar um Novo Quiz</h3>
             <div class="form-group">
                 <label for="name">Nome:</label>
                 <input type="text" class="form-control" id="name" name="name" placeholder="Informe o nome..." />
@@ -75,7 +75,13 @@
                 <br />
                 <br />
 
-                <div class="form-group">
+                <div class="d-flex mt-3 mb-3" id="question_not_allow">
+                    <hr style="width:30%;">
+                    <div class="text-center mt-1 font-italic text-muted" style="width:20%">cadastre primeiro o quiz</div>
+                    <hr style="width:30%">
+                </div>
+
+                <div class="form-group" id="question_div_container" style="display: none">
                     <label>Personagens Adicionados:</label>
                     <br />
                     <div id="lista_cadastrados" class="row">
@@ -188,6 +194,7 @@
                     </button>
                 </div>
                 <div class="modal-body">
+                    <input type="hidden" id="question_id" name="question_id" value="0" />
                     <div class="p-4">
                         <div class="form-group">
                             <label for="question_name">Nome:</label>
@@ -231,7 +238,8 @@
                                         <tr>
                                             <th>Nome</th>
                                             <th>Tipo</th>
-                                            <th>Remover</th>
+                                            <th>Value</th>
+                                            <th> </th>
                                         </tr>
                                     </thead>
                                     <tbody id="table_use_attribute">
@@ -254,7 +262,6 @@
                                             <th>Nome</th>
                                             <th>Tipo</th>
                                             <th>Value</th>
-                                            <th></th>
                                         </tr>
                                     </thead>
                                     <tbody id="table_all_attribute">

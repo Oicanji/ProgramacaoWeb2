@@ -4,16 +4,7 @@ $('body').append(`
 
 input_attributes = document.querySelector('#attributes_list');
 
-
-/**
- * atributes: {
- *  name: string,
- *  type: string,
- *  value: string
- * }
- */
-
-attributes = {
+const attributes = {
     list: [],
     list_use: [],
     change: function () {
@@ -27,8 +18,13 @@ attributes = {
             });
         }
         input_attributes.value = JSON.stringify(list_clear);
+        
+        attributes.table.refresh();
+        attributes.table.table_has_empty();
     },
     quiz_init : function (questions=0) {
+        $('#button_reset_use_attribute').attr('onClick', 'attributes.not_use_all()');
+        
         if(questions == 0){
             $('#use_attributes').css('display','none');
             attributes.table.table_use_visible = true;
@@ -40,7 +36,7 @@ attributes = {
             }
         }
     },
-    add_all: function (name, type, value) {
+    add_all: function (name, type, value, used = false) {
         //check if attribute is in list
         for (const attribute of attributes.list) {
             if(attribute.name == name){
@@ -51,11 +47,11 @@ attributes = {
             name: name,
             type: type,
             value: value,
-            use: false
+            use: used
         });
     },
     add_new: function (name, type, value) {
-        attributes.add_all(name, type, value);
+        attributes.add_all(name, type, value, true);
         attributes.list_use.push({
             name: name,
             type: type,
@@ -67,12 +63,22 @@ attributes = {
         attributes.list_use = attributes.list_use.filter(function (attribute) {
             return attribute.name != name;
         });
+
+        //search in list to is attribute and set use false
+        for (const attribute_list of attributes.list) {
+            if(attribute_list.name == name){
+                attribute_list.use = false;
+                break;
+            }
+        }
     },
     not_use_all: function () {
         for (const attribute of attributes.list) {
             attribute.use = false;
         }
         attributes.list_use = [];
+
+        attributes.change();
     },
     get: function (use_list) {
         for(const attribute of use_list){
@@ -90,31 +96,13 @@ attributes = {
 
 attributes.table = {
     table_use_visible: false,
-    print: function (attribute, click_to_add=false) {
-        del = `<td>
-            <button type="button" class="btn btn-danger" onClick="attributes.table.minus('#attr_${attribute.name}')">Remover</button>
-        </td>`;
-        if(click_to_add == false){
-            del = '';
-        }
-
-        return `
-        <tr id="attr_${attribute.name}"  ${click_to_add ? 'onClick="attributes.table.add(\''+attribute.name+'\', \''+attribute.type+'\', \''+attribute.value+'\')"' : ''}>
-            <td>${attribute.name}</td>
-            <td>${attribute.type}</td>
-            <td>${attribute.value}</td>
-            ${del}
-        </tr>
-        `;
-    },
     add: function (name, type, value) {
         attributes.add_new(name, type, value);
         if (attributes.table.table_use_visible == true) {
             $('#use_attributes').slideDown();
         }
-        attributes.ui.reset();
     },
-    minus: function (tr_id) {
+    remove(tr_id) {
         tr = $(tr_id);
         attributes_name = $(tr).children()[0].innerHTML;
         attributes_type = $(tr).children()[1].innerHTML;
@@ -124,27 +112,58 @@ attributes.table = {
 
         attributes.change();
     },
+    print(attribute, click_to_add=false) {
+
+        del = `
+        <td>
+            <button type="button" class="btn btn-danger" onclick="attr_delete('#attr_${attribute.name}')">Remover</button>
+        </td>`;
+        if(!click_to_add){
+            del = '';
+        }
+
+        return `
+        <tr id="attr_${attribute.name}"  ${!click_to_add ? 'onClick="attr_add(\''+attribute.name+'\', \''+attribute.type+'\', \''+attribute.value+'\')"' : ''}>
+            <td>${attribute.name}</td>
+            <td>${attribute.type}</td>
+            <td>${attribute.value}</td>
+            ${del}
+        </tr>
+        `;
+    },
     refresh: function () {
-        all = '';
-        use = '';
+        use_list = '';
+        all_list = '';
 
         $table_use = $('#table_use_attribute');
         $table_all = $('#table_all_attribute');
-        
-        $($table_use).html(use);
-        $($table_all).html(all);
 
         for (const attribute of attributes.list) {
-            if(attribute.use){
-                all += attributes.table.print(attribute, false);
+            if(attribute.use == true){
+                use_list += attributes.table.print(attribute, true);
             }else{
-                use += attributes.table.print(attribute, true);
+                all_list += attributes.table.print(attribute, false);
             }
         }
-        //clear all tables
-        $($table_use).html(use);
-        $($table_all).html(all);
+
+        $($table_use).html(use_list);
+        $($table_all).html(all_list);
     },
+    table_has_empty: function () {
+        $table_use = $('#table_use_attribute');
+        $table_all = $('#table_all_attribute');
+        if($($table_use).html() == ''){
+            $('#use_attributes').slideUp();
+        } else {
+            $('#use_attributes').slideDown();
+        }
+        if($($table_all).html() == ''){
+            $('#all_attributes').slideUp();
+        } else {
+            $('#all_attributes').slideDown();
+        }
+        
+    }
 }
 attributes.ui = {
     new: function (name, type, value) {
@@ -174,9 +193,14 @@ attributes.ui = {
         $('#attribute_value').val('');
 
         attributes.change();
-
-        attributes.table.refresh();
     }
+}
+
+function attr_delete(id){
+    attributes.table.remove(id);
+}
+function attr_add(id){
+    attributes.table.add(id);
 }
 
 $('#button_attribute').on('click', function () {

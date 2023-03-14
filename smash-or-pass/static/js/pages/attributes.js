@@ -203,6 +203,8 @@ function attr_add(id){
     attributes.table.add(id);
 }
 
+$('#question-div');
+
 $('#button_attribute').on('click', function () {
     deu_certo = attributes.ui.new($('#attribute_name').val(), $('#attribute_type').val(), $('#attribute_value').val());
     if(!deu_certo){

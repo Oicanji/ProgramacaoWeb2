@@ -1,6 +1,6 @@
 from . import db
 from flask_login import UserMixin
-from .bo.user import User
+from .base.user import User
 
 class Quiz(db.Model):
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
@@ -21,6 +21,7 @@ class Question(db.Model):
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     name = db.Column(db.String(100))
     image = db.Column(db.String(500))
+    attribute = db.Column(db.String(20000))
     quiz_id = db.Column(db.Integer, db.ForeignKey('quiz.id'))
 
 class Categories(db.Model):
@@ -33,10 +34,20 @@ class Category(db.Model):
     name = db.Column(db.String(100))
     color = db.Column(db.String(100))
 
+class ListAnswers(db.Model):
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    id_quiz = db.Column(db.Integer, db.ForeignKey('quiz.id'))
+    answers = db.relationship('Answers')
+
+"""
+ANSWERS - Resolução dos questionários
+É responsa
+"""
 class Answers(db.Model):
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
-    id_anwser = db.Column(db.Integer, db.ForeignKey('anwser.id'))
     id_question = db.Column(db.Integer, db.ForeignKey('question.id'))
+    id_user = db.Column(db.Integer, db.ForeignKey('user.id'))
+    list_answers = db.relationship('Answer')
 
 class Answer(db.Model):
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)

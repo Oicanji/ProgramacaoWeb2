@@ -3,6 +3,7 @@
 import os
 import sys
 
+#comando para rodar o servidor é python manage.py runserver
 
 def main():
     """Run administrative tasks."""

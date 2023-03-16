@@ -1,0 +1,81 @@
+{% extends 'main/base.html' %}
+
+{% block title %}ToDo Lsit{% endblock %}
+
+{% block content %}
+    <h1>{{todo.name}}:</h1>
+    <hr>
+    <p class="text-start">Nessa lista existem os seguintes items:</p>
+    <table class="table">
+        <thead>
+          <tr>
+            <th scope="col">Nome</th>
+            <th scope="col">Situação</th>
+            <th scope="col">#</th>
+          </tr>
+        </thead>
+        <tbody>
+        {% for item in todo.item_set.all %}
+            <tr style="margin-top: 6px;">
+                <td>{{item.text}}</td>
+
+                {% if item.complete %}
+                    <td style="color: green">Completo</td>
+                {% else %}
+                    <td style="color: red">Imcompleto</td>
+                {% endif %}
+                <td>
+                    <button class="btn 
+                        {% if item.complete %}
+                            btn-danger
+                        {% else %}
+                            btn-success
+                        {% endif %}" onclick="location.href='{% url 'itemstatuschange' item.id %}'">
+                    {% if item.complete %}
+                        Marcar como incompleto
+                    {% else %}
+                        Marcar como completo
+                    {% endif %}
+                    </button>
+                </td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+    <br />
+    <hr>
+    <h3>Adicionar um novo item:</h3>
+    
+    <div class="form-group text-start">
+        <label for="item" class="form-label">Nome do item</label>
+        <input type="text" class="form-control" id="item" name="item" placeholder="Nome do item">
+    </div>
+    <br />
+    <button type="submit" class="btn btn-primary" onclick="addItem()">Adicionar</button>
+        
+    <script>
+        function addItem() {
+            var item = document.getElementById("item").value;
+            var xhttp = new XMLHttpRequest();
+            xhttp.onreadystatechange = function() {
+                if (this.readyState == 4 && this.status == 200) {
+                    location.reload();
+                }
+            };
+            xhttp.open("POST", "{% url 'createnewitem' todo.id %}", true);
+            xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+            xhttp.send("form=" + item);
+        }
+        function getItems() {
+            var xhttp = new XMLHttpRequest();
+            xhttp.onreadystatechange = function() {
+                if (this.readyState == 4 && this.status == 200) {
+                    document.getElementById("items").innerHTML = this.responseText;
+                }
+            };
+            xhttp.open("GET", "{% url 'getitems' todo.id %}", true);
+            xhttp.send();
+        }
+    </script>
+        
+{% endblock %}

@@ -1,6 +1,6 @@
 {% extends 'main/base.html' %}
 
-{% block title %}ToDo Lsit{% endblock %}
+{% block title %}ToDo List{% endblock %}
 
 {% block content %}
     <h1>{{todo.name}}:</h1>
@@ -12,34 +12,10 @@
             <th scope="col">Nome</th>
             <th scope="col">Situação</th>
             <th scope="col">#</th>
+            <th scope="col">#</th>
           </tr>
         </thead>
-        <tbody>
-        {% for item in todo.item_set.all %}
-            <tr style="margin-top: 6px;">
-                <td>{{item.text}}</td>
-
-                {% if item.complete %}
-                    <td style="color: green">Completo</td>
-                {% else %}
-                    <td style="color: red">Imcompleto</td>
-                {% endif %}
-                <td>
-                    <button class="btn 
-                        {% if item.complete %}
-                            btn-danger
-                        {% else %}
-                            btn-success
-                        {% endif %}" onclick="location.href='{% url 'itemstatuschange' item.id %}'">
-                    {% if item.complete %}
-                        Marcar como incompleto
-                    {% else %}
-                        Marcar como completo
-                    {% endif %}
-                    </button>
-                </td>
-            </tr>
-        {% endfor %}
+        <tbody id="todo_list">
         </tbody>
     </table>
     <br />
@@ -51,30 +27,115 @@
         <input type="text" class="form-control" id="item" name="item" placeholder="Nome do item">
     </div>
     <br />
-    <button type="submit" class="btn btn-primary" onclick="addItem()">Adicionar</button>
+    <button type="submit" class="btn btn-primary" id="new_item_in_todo">Adicionar</button>
         
+    {% csrf_token %}
     <script>
         function addItem() {
             var item = document.getElementById("item").value;
             var xhttp = new XMLHttpRequest();
+            var csrf_from_django = document.getElementsByName("csrfmiddlewaretoken")[0].value;
             xhttp.onreadystatechange = function() {
                 if (this.readyState == 4 && this.status == 200) {
-                    location.reload();
+                    getItems();
+                }else{
+                    console.log("addItem: Erro: " + this.status);
                 }
             };
             xhttp.open("POST", "{% url 'createnewitem' todo.id %}", true);
             xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+            xhttp.setRequestHeader("X-CSRFToken", csrf_from_django);
             xhttp.send("form=" + item);
         }
-        function getItems() {
+        document.getElementById("new_item_in_todo").addEventListener("click", e => {
+            e.preventDefault();
+            e.stopPropagation();
+            addItem();
+            console.log("addItem: Clicked");
+        });
+
+        function itemStatusChange(item_id) {
             var xhttp = new XMLHttpRequest();
+            var csrf_from_django = document.getElementsByName("csrfmiddlewaretoken")[0].value;
             xhttp.onreadystatechange = function() {
                 if (this.readyState == 4 && this.status == 200) {
-                    document.getElementById("items").innerHTML = this.responseText;
+                    getItems();
+                }else{
+                    console.log("itemstatuschange: Erro: " + this.status);
+                }
+            };
+            xhttp.open("POST", "{% url 'itemstatuschange' todo.id %}", true);
+            xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+            xhttp.setRequestHeader("X-CSRFToken", csrf_from_django);
+            xhttp.send("id=" + item_id);
+        }
+
+        function renderItems(items){
+            document.getElementById("todo_list").innerHTML = "";
+            for (let i = 0; i < items.length; i++) {
+                const item = items[i];
+                var tr = document.createElement("tr");
+                var td1 = document.createElement("td");
+                var td2 = document.createElement("td");
+                var td3 = document.createElement("td");
+                var td4 = document.createElement("td");
+                var button = document.createElement("button");
+                var text = document.createTextNode(item.text);
+                var text2 = document.createTextNode(item.complete ? "Completo" : "Incompleto");
+                var text3 = document.createTextNode(item.complete ? "Marcar como incompleto" : "Marcar como completo");
+                var deletee = document.createElement("i");
+                deletee.setAttribute("class", "fa-solid fa-trash");
+                td1.appendChild(text);
+                td2.appendChild(text2);
+                button.appendChild(text3);
+                button.setAttribute("class", "btn " + (item.complete ? "btn-success" : "btn-danger"));
+                button.setAttribute("onclick", "itemStatusChange(" + item.id + ")");
+                td3.appendChild(button);
+                deletee.setAttribute("onclick", "deleteItem(" + item.id + ")");
+                var deletee_button = document.createElement("button");
+                deletee_button.setAttribute("class", "btn btn-danger");
+                deletee_button.appendChild(deletee);
+                td4.appendChild(deletee_button);
+                tr.appendChild(td1);
+                tr.appendChild(td2);
+                tr.appendChild(td3);
+                tr.appendChild(td4);
+                document.getElementById("todo_list").appendChild(tr);
+            }
+        }
+
+        function deleteItem(item_id) {
+            var xhttp = new XMLHttpRequest();
+            var csrf_from_django = document.getElementsByName("csrfmiddlewaretoken")[0].value;
+            xhttp.onreadystatechange = function() {
+                if (this.readyState == 4 && this.status == 200) {
+                    getItems();
+                }else{
+                    console.log("deleteItem: Erro: " + this.status);
+                }
+            };
+            xhttp.open("POST", "{% url 'delitem' todo.id %}", true);
+            xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+            xhttp.setRequestHeader("X-CSRFToken", csrf_from_django);
+            xhttp.send("id=" + item_id);
+        }
+
+        function getItems() {
+            var xhttp = new XMLHttpRequest();
+            var csrf_from_django = document.getElementsByName("csrfmiddlewaretoken")[0].value;
+            xhttp.onreadystatechange = function() {
+                if (this.readyState == 4 && this.status == 200) {
+                    renderItems(JSON.parse(this.responseText));
                 }
             };
             xhttp.open("GET", "{% url 'getitems' todo.id %}", true);
+            xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+            xhttp.setRequestHeader("X-CSRFToken", csrf_from_django);
             xhttp.send();
+        }
+
+        window.onload = function() {
+            getItems();
         }
     </script>
         

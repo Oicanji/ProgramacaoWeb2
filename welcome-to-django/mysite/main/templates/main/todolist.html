@@ -11,8 +11,8 @@
           <tr>
             <th scope="col">Nome</th>
             <th scope="col">Situação</th>
-            <th scope="col">#</th>
-            <th scope="col">#</th>
+            <th scope="col" class="text-center">#</th>
+            <th scope="col" class="text-center">#</th>
           </tr>
         </thead>
         <tbody id="todo_list">
@@ -78,7 +78,9 @@
                 var td1 = document.createElement("td");
                 var td2 = document.createElement("td");
                 var td3 = document.createElement("td");
+                td3.setAttribute("class", "text-center");
                 var td4 = document.createElement("td");
+                td4.setAttribute("class", "text-center");
                 var button = document.createElement("button");
                 var text = document.createTextNode(item.text);
                 var text2 = document.createTextNode(item.complete ? "Completo" : "Incompleto");

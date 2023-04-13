@@ -3,5 +3,27 @@
 {% block title %}ToDo Website{% endblock %}
 
 {% block content %}
-    <h1>AVISO!</h1>
+    <h1> toDo lists:</h1>
+    <br />
+    {% if len(user.todolist.all) == 0 %}
+        <p> Você não tem nenhuma lista de tarefas. <a href="{% url 'createnewlist' %}">Clique aqui</a> para criar uma nova lista.</p>
+    {% else %}
+        <table class="table table-striped table-hover text-center">
+            <thead>
+                <tr>
+                    <th scope="col">Nome da lista</th>
+                    <th scope="col">#</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for td in user.todolist.all %}
+                    <tr onclick="window.location.href='{% url 'todolist' td.id %}'">
+                        <td>{{ td.name }}</td>
+                        <td><a href=""><i class="fas fa-trash-alt text-danger"></i></a></td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    {% endif %}
+
 {% endblock %}
